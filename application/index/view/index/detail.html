@@ -1,0 +1,108 @@
+{include file="../application/index/view/default/header.html" title="<?php echo $newsData['title'] ?>" userData=$userData /}
+<div class="container padding-top">
+    <div class="row">
+        <ol class="breadcrumb text-slg">
+            <li><a href="/">首页</a></li>
+            <li class="active">新闻详情</li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="panel panel-default" id="news" data-nid="{$newsData['nid']}">
+            <div class="panel-body">
+                <h1 class="text-info text-center">{$newsData['title']}
+                <br><small class="text-md">发表时间：<?php echo date("y-m-d",strtotime($newsData['ntime']))?>    发表人：{$newsData['username']}</small>
+                </h1>
+                <p class="col-sm-10 col-sm-offset-1 text-slg">{$newsData['detail']}</p>
+            </div>
+        </div>
+        <div class="panel panel-default clearfix">
+            <div class="input-group mar btn-block padding-top-xs">
+                <span class="label default col-sm-1 col-sm-offset-1 text-slg"><span class="text-primary">{$userData['username']}：</span></span>
+                <?php if($userData){ ?>
+                <textarea class="ctextarea pull-left col-sm-8 text-slg content" placeholder="请输入评论内容" ></textarea></br>
+                <div class="input-group mar btn-block col-sm-offset-5 padding-top-xs" >
+                    <button class="btn btn-info col-sm-1 comment-submit">提交</button>
+                </div>
+                <input type="hidden" id="nid" value="{$newsData['nid']}">
+                <input type="hidden" id="uid" value="{$userData['uid']}">
+                <input type="hidden" id="username" value="{$userData['username']}">
+
+                <?php }else{ ?>
+                <textarea class="ctextarea pull-left col-sm-8 text-slg" disabled>请登录</textarea>
+                <?php } ?>
+            </div>
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="comment"></div>
+                <nav class="row">
+                    <ul class="pagination">
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    $(document).ready(function() {
+        $('.comment-submit').on('click',function(){
+            $.ajax({
+                type:'POST',
+                url:'/index/comment/add',
+                dataType:'json',
+                data:{'uid':$('#uid').val(),'content':$('.content').val(),'username':$('#username').val(),'nid':$('#nid').val()},
+                success:function(data){
+                    alert(data.msg);
+                    if(!data.code){
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+        var page = 1;
+        var nid = $('#news').data('nid');
+        function getPageComment (page,nid) {
+            $.ajax({
+                type: "get",
+                url: '/index/comment/getPageCommentList?limit=2&page='+page+'&nid='+nid,
+                success: function(result, textStatus){
+                    var ulBody = $('.comment');
+                    chtml = '';
+                    var commentList = result.commentList;
+                    if(commentList.length == 0){
+                        chtml = '没用评论内容';
+                    }else{
+                        for(var i in commentList){
+                            chtml += ' <div class="panel panel-primary row"><div class="panel-heading"><h3 class="panel-title"> '+commentList[i].username+'<small class="pull-right">'+commentList[i].ctime+'</small></h3></div><div class="panel-body text-primary">'+commentList[i].content+'</div></div>';
+                        }
+                    }
+                    ulBody.html(chtml);
+
+                    var pageBody = $('.pagination');
+                    var pageCount = Math.ceil(result.count/result.limit);
+                    phtml = '';
+                    for (var i=1;i<=pageCount;i++) {
+                        if(i == page){
+                            var style = 'class="active"';
+                        }else{
+                            var style = '';
+                        }
+
+                        phtml += "<li "+style+"><a href='javascript:;' data-nid='"+nid+"' data-page='"+i+"'"+" class='page_btn' >"+i+"</a></li>"
+
+                    }
+                    pageBody.html(phtml);
+
+                   $('.page_btn').on('click',function(){
+                        var page = $(this).data('page');
+                        var nid = $(this).data('nid');
+                        getPageComment(page,nid);
+                   });
+                }
+            });
+        }
+        getPageComment(page,nid);
+
+    })
+</script>
+</html>

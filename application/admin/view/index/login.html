@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+{include file="../application/admin/view/default/header.html" title="登陆" adminData=$adminData /}
+
+<label>用户名：</label><input type="text" name="username" size="35" id="username"><br><br>
+<label>密码：</label><input type="password" name="username" size="35" id="password"><br><br>
+<input type="submit" value="提交" id="submit"><br><br>
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    $('#submit').on('click',function(){
+        $.ajax({
+            type:'POST',
+            url:'/admin/index/login',
+            dataType:'json',
+            data:{'username':$('#username').val(),'password':$('#password').val()},
+            success:function(data){
+                alert(data.msg);
+                if(!data.code){
+                    window.location.href='/admin/news/index';
+                }
+            }
+        });
+    });
+</script>
+
+</html>
+

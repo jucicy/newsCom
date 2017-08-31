@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<!--<input type="file" accept="csv" id="file">
+<button  id="addCoupon">提交</button>
+
+<script src="/static/bootstrap/js/jquery-1.11.3.min.js"></script>
+<script>
+
+$(document).ready(function() {
+    $('#addCoupon').on('click',function(){
+        $.ajax({
+            type:'POST',
+            url:'/index/index/uploadCsv',
+            dataType:'json',
+            data:{'file':$('#file').val()},
+            success:function(data){
+                alert(data.msg);
+                if(!data.code){
+                    window.location.reload();
+                }
+            }
+        });
+    });
+})
+
+</script>-->
+
+
+<form action="/index/index/uploadCsv" method="post"
+      enctype="multipart/form-data">
+    <label for="file">Filename:</label>
+    <input type="file" name="file" accept="csv" id="file" />
+    <br />
+    <input type="submit" name="submit" value="Submit" />
+</form>
+
+</body>
+</html>

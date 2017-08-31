@@ -1,0 +1,50 @@
+{include file="../application/admin/view/default/header.html" title="编辑新闻" adminData=$adminData /}
+<body>
+<div class="container padding-top">
+    <div class="row">
+        <ol class="breadcrumb">
+            <li><a href="/admin/news/index">后台首页</a></li>
+            <li class="active">编辑新闻</li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="input-group mar btn-block">
+                    <span class="label default col-sm-1">新闻标题</span>
+                    <input type="text" class="col-sm-9 inp title" value="{$newsData.title}">
+                </div>
+                <div class="input-group mar btn-block">
+                    <span class="label default col-sm-1">新闻内容</span>
+                    <textarea class="textarea pull-left col-sm-9 detail">{$newsData.detail}</textarea>
+                </div>
+                <div class="input-group mar btn-block">
+                    <span class="label default col-sm-1" style="color:#fff;font-size: 0;">新闻内容</span>
+                    <button class="btn btn-primary col-sm-1 editNews" data-id="{$newsData.nid}">编辑</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.editNews').on('click',function(){
+            $.ajax({
+                type:'POST',
+                url:'/admin/news/edit',
+                dataType:'json',
+                data:{'nid':$('.editNews').data('id'),'title':$('.title').val(),'detail':$('.detail').val()},
+                success:function(data){
+                    alert(data.msg);
+                    if(!data.code){
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+    })
+</script>
+</html>

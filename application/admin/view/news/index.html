@@ -1,0 +1,92 @@
+{include file="../application/admin/view/default/header.html" title="新闻列表" adminData=$adminData /}
+
+
+<div class="panel padding-top-sm">
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">新闻ID</th>
+                    <th class="text-center">标题</th>
+                    <th class="text-center">编辑人</th>
+                    <th class="text-center">发布时间</th>
+                    <th class="text-center">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach($newsList as $news){ ?>
+                <tr>
+                    <td class="text-center">{$news.nid}</td>
+                    <td class="text-center">{$news.title}</td>
+                    <td class="text-center">{$news.username}</td>
+                    <td class="text-center"><?php echo date("y-m-d",strtotime($news['ntime']))?></td>
+                    <td class="text-center">
+                        <?php if($news['status'] == 1){ ?>
+                        <a href="javascript:;" class="downNews" data-id="{$news.nid}">下线</a>
+                        <?php }else{ ?>
+                        <a href="javascript:;" class="upNews" data-id="{$news.nid}">上线</a>
+                        <?php } ?>
+                        <a href="/admin/news/edit?nid={$news.nid}" class="editNews" data-id="{$news.nid}">编辑</a>
+                        <a href="javascript:;" class="deleteNews" data-id="{$news.nid}">删除</a>
+                    </td>
+                </tr>
+                <?php }?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<a href="/admin/news/add" class="btn btn-primary btn-block">添加新闻</a>
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.downNews').on('click',function(){
+            $.ajax({
+                type:'POST',
+                url:'/admin/news/status',
+                dataType:'json',
+                data:{'nid':$('.downNews').data('id'),'status':0},
+                success:function(data){
+                    alert(data.msg);
+                    if(!data.code){
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+        $('.upNews').on('click',function(){
+            $.ajax({
+                type:'POST',
+                url:'/admin/news/status',
+                dataType:'json',
+                data:{'nid':$('.upNews').data('id'),'status':1},
+                success:function(data){
+                    alert(data.msg);
+                    if(!data.code){
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+        $('.deleteNews').on('click',function(){
+            $.ajax({
+                type:'POST',
+                url:'/admin/news/delete',
+                dataType:'json',
+                data:{'nid':$('.deleteNews').data('id')},
+                success:function(data){
+                    alert(data.msg);
+                    if(!data.code){
+                        window.location.reload();
+                    }
+                }
+            });
+        });
+    })
+
+
+</script>
+</html>

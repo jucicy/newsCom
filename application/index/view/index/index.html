@@ -1,11 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-<?php echo $username;?>
-<h1>标题1</h1>
+{include file="../application/index/view/default/header.html" title="新闻列表" userData=$userData /}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 rightContent padding-top">
+            <div class="list-group">
+                <?php foreach($newsList as $news){ ?>
+                    <div class="list-group-item clearfix text-slg">
+                        <a href="#">
+                            <span class="col-sm-2"><?php echo date("y-m-d",strtotime($news['ntime']))?></span>
+                            <span class="col-sm-10 text-lg text-primary"> <a href="/index/index/detail?nid={$news.nid}">{$news.title}</a></span>
+                        </a>
+                    </div>
+                <?php }?>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

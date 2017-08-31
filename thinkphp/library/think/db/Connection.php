@@ -383,8 +383,10 @@ abstract class Connection
             return $this->getResult($pdo, $procedure);
         } catch (\PDOException $e) {
             if ($this->isBreak($e)) {
+                print_r('isBreak');
                 return $this->close()->query($sql, $bind, $master, $pdo);
             }
+            print_r('test');
             throw new PDOException($e, $this->config, $this->getLastsql());
         } catch (\Exception $e) {
             if ($this->isBreak($e)) {
